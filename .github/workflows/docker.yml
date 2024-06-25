@@ -1,5 +1,5 @@
-# File: .github/workflows/docker-build-push.yml
-name: Build and Push Docker Image
+# File: .github/workflows/docker.yml (in your main repository)
+name: Trigger Shared Workflow
 
 on:
   pull_request:
@@ -9,7 +9,13 @@ on:
       - main
 
 jobs:
-  Build:
-    uses: /shared-workflow2/.github/workflows/main.yml@main
-    with:
-        docker-repo-name: 'mukesh18s/prod'
+  trigger_shared_workflow:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Shared Workflow in shared-workflow2
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: mukeshsirvi18/shared-workflow2
+          event-type: build-docker-image
+          client-payload: '{"docker-repo-name": "mukesh18s/prod"}'
