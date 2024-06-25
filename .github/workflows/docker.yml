@@ -1,21 +1,21 @@
-# File: .github/workflows/docker.yml (in your main repository)
-name: Trigger Shared Workflow
+name: Use Reusable Docker Build Workflow
 
 on:
-  pull_request:
-    types: [labeled]
   push:
     branches:
       - main
+  pull_request:
+    types: [closed]
 
 jobs:
-  trigger_shared_workflow:
+  call-reusable-workflow:
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger Shared Workflow in shared-workflow2
-        uses: peter-evans/repository-dispatch@v1
+      - name: Trigger Reusable Docker Build Workflow
+        uses: mukeshsirvi18/shared-workflow2/.github/workflows/main.yml@main
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          repository: mukeshsirvi18/shared-workflow2
-          event-type: build-docker-image
-          client-payload: '{"docker-repo-name": "mukesh18s/prod"}'
+          docker_repo_dev: 'mukesh18s/dev'
+          docker_repo_prod: 'mukesh18s/prod'
+          secrets: |
+            DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+            DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
